@@ -23,13 +23,6 @@ RUN cp /usr/lib64/libc-client.so.2007f /usr/local/lib/libc-client.so
 RUN mkdir -p /build
 COPY ./src/ /build/
 
-RUN cd /build && tar xvzf libevent-1.4.14-stable.tar.gz && \
-    tar xvzf re2c-0.13.5.tar.gz && \
-    tar xvzf libmemcached-0.48.tar.gz && \
-    tar xvzf icu4c-4_6_1-src.tgz && \
-    tar xvzf boost_1_50_0.tar.gz && \
-    tar xvzf libcclient2007-devel.tar.gz
-
 RUN cp -r /build/imap $HOME/local/include/
 RUN git clone https://github.com/google/glog.git /build/glog && cd /build/glog && \
     git checkout 6aa35189 && \
@@ -48,8 +41,7 @@ RUN cd /build/libevent-1.4.14-stable && \
     make install && \
     cd ..
 
-RUN cd /build && tar -jxvf curl-7.20.0.tar.bz2 && \
-    cd curl-7.20.0 && \
+RUN cd /build/curl-7.20.0 && \
     patch -p1 < /build/hiphop-php/hphp/third_party/libcurl.fb-changes.diff && \
     ./configure --prefix=$CMAKE_PREFIX_PATH && \
     make install && \
@@ -89,20 +81,20 @@ RUN export PATH=$PATH:/usr/lib64/mpich/bin/ && cd /build/boost_1_50_0 && \
 
 
 
-RUN cd /build && tar jxf gmp-4.3.2.tar.bz2 && cd gmp-4.3.2/ && \
+RUN cd /build/gmp-4.3.2/ && \
     ./configure --prefix=$HOME/local/gmp && \
     make &&make install
 
-RUN cd /build && tar jxf mpfr-2.4.2.tar.bz2 && cd mpfr-2.4.2/ && \
+RUN cd /build/mpfr-2.4.2/ && \
     ./configure --prefix=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
     make && make install 
 
-RUN cd /build && tar xzf mpc-0.8.1.tar.gz && cd mpc-0.8.1 && \
+RUN cd /build/mpc-0.8.1 && \
     ./configure --prefix=$HOME/local/mpc -with-mpfr=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
     make && make install
 
 
-RUN cd /build && tar jxf gcc-4.6.3.tar.bz2 && cd gcc-4.6.3 && \
+RUN cd /build/gcc-4.6.3 && \
     ./configure --prefix=$HOME/local/gcc -enable-threads=posix -disable-checking -disable-multilib -enable-languages=c,c++ -with-gmp=$HOME/local/gmp -with-mpfr=$HOME/local/mpfr/ -with-mpc=$HOME/local/mpc/ && \
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/local/mpc/lib:$HOME/local/gmp/lib:$HOME/local/mpfr/lib/ && \
     make && make install
