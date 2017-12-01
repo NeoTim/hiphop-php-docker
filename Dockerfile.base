@@ -1,0 +1,17 @@
+FROM centos:6.7
+
+RUN mkdir -p $HOME/local
+ENV CMAKE_PREFIX_PATH=$HOME/local
+ENV USE_HPHPC=1 HPHP_HOME=/build/hiphop-php HPHP_LIB=/build/hiphop-php/bin
+
+RUN yum -y update && yum -y install wget
+RUN wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm && rpm -ivh epel-release-6-8.noarch.rpm
+RUN wget http://repo.enetres.net/enetres.repo -O /etc/yum.repos.d/enetres.repo
+
+RUN yum -y update && yum -y install libc-client2007* elfutils-devel libc-client-devel \
+    inotify-tools-devel kernel-devel make git cmake pcre-devel libmcrypt-devel gd-devel libxml2-devel \
+    autoconf* automake* libunwind* mysql-devel \
+    libcap-devel binutils-devel flex bison expat-devel \
+    bzip2-devel memcached openldap openldap-devel readline-devel libc-client-devel \
+    pam-devel wget ncurses-devel bzip2-devel zlib-devel patch \
+    bzip2 libtool* tar oniguruma* python-devel libunistring-devel gcc-c++
