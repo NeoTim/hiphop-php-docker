@@ -1,0 +1,17 @@
+FROM jumbojett/hiphop-php-docker:step5
+
+
+RUN cd /build/gcc-4.6.3 && \
+    ./configure --prefix=$HOME/local/gcc -enable-threads=posix -disable-checking -disable-multilib -enable-languages=c,c++ -with-gmp=$HOME/local/gmp -with-mpfr=$HOME/local/mpfr/ -with-mpc=$HOME/local/mpc/ && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/local/mpc/lib:$HOME/local/gmp/lib:$HOME/local/mpfr/lib/ && \
+    make && make install
+
+ADD gcc.4.6.3.conf /etc/ld.so.conf.d/gcc.4.6.3.conf
+RUN ldconfig && \
+    #mv /usr/bin/gcc  /usr/bin/gcc_old && \
+    #mv /usr/bin/g++  /usr/bin/g++_old && \
+    ln -s -f $HOME/local/gcc/bin/gcc  /usr/bin/gcc && \
+    ln -s -f $HOME/local/gcc/bin/g++  /usr/bin/g++ && \
+    cp $HOME/local/gcc/lib64/libstdc++.so.6.0.16 /usr/lib64/. && \
+    #mv /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6.bak && \
+    ln -s -f /usr/lib64/libstdc++.so.6.0.16 /usr/lib64/libstdc++.so.6
