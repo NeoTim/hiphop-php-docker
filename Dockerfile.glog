@@ -1,0 +1,7 @@
+FROM jumbojett/hiphop-php-docker:base
+
+RUN git clone https://github.com/google/glog.git /build/glog && cd /build/glog && \
+    git checkout 6aa35189 && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make -j$(nproc) && \
+    make install
