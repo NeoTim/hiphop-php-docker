@@ -1,4 +1,4 @@
-FROM jumbojett/hiphop-php-docker:glog
+FROM jumbojett/hiphop-php-docker:step1
 
 RUN cd /build && git clone https://github.com/01org/tbb.git tbb && \
     cd tbb && git checkout tags/4.4 && \ 
