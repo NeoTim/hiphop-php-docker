@@ -1,0 +1,9 @@
+FROM jumbojett/hiphop-php-docker:tbb
+
+RUN mkdir -p /build
+COPY ./src/ /build/
+
+RUN export PATH=$PATH:/usr/lib64/mpich/bin/ && cd /build/boost_1_50_0 && \
+    ./bootstrap.sh --prefix=$HOME/local --libdir=$HOME/local/lib && \
+    ./bjam -j$(nproc) --layout=system install && \
+    cd ..
