@@ -1,4 +1,4 @@
-FROM jumbojett/hiphop-php-docker:tbb
+FROM jumbojett/hiphop-php-docker:step2
 
 RUN mkdir -p /build
 COPY ./src/ /build/
