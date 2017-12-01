@@ -1,0 +1,17 @@
+FROM jumbojett/hiphop-php-docker:glog
+
+RUN cd /build && git clone https://github.com/01org/tbb.git tbb && \
+    cd tbb && git checkout tags/4.4 && \ 
+    /usr/bin/gmake && \
+    cp -Rp include/tbb/ /usr/include/ && \
+    cp `pwd`/build/*_release/*.so /usr/lib/ && \
+    cp `pwd`/build/*_release/*.so.2 /usr/lib/ && \
+    ldconfig
+
+RUN cd /build && git config --global http.sslverify false && \
+    git clone https://git.code.sf.net/p/libdwarf/code libdwarf-code && \
+    cd libdwarf-code && git checkout tags/20110612 && \
+    cd libdwarf && \
+    ./configure && make && \
+    cp libdwarf.a /usr/lib64/ && \
+    cp libdwarf.h /usr/include/ && cp dwarf.h /usr/include/
