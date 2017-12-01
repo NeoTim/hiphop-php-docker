@@ -1,0 +1,14 @@
+FROM jumbojett/hiphop-php-docker:step4
+
+
+RUN cd /build/gmp-4.3.2/ && \
+    ./configure --prefix=$HOME/local/gmp && \
+    make &&make install
+
+RUN cd /build/mpfr-2.4.2/ && \
+    ./configure --prefix=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
+    make && make install 
+
+RUN cd /build/mpc-0.8.1 && \
+    ./configure --prefix=$HOME/local/mpc -with-mpfr=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
+    make && make install
