@@ -1,0 +1,29 @@
+FROM jumbojett/hiphop-php-docker:step3
+
+
+RUN cd /build/re2c-0.13.5 && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make install && \
+    cd ..
+
+RUN cd /build/libevent-1.4.14-stable && \
+    patch < /build/hiphop-php/hphp/third_party/libevent-1.4.14.fb-changes.diff && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make install && \
+    cd ..
+
+RUN cd /build/curl-7.20.0 && \
+    patch -p1 < /build/hiphop-php/hphp/third_party/libcurl.fb-changes.diff && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make install && \
+    cd ..
+
+RUN cd /build/libmemcached-0.48 && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make install && \
+    cd ..
+
+RUN cd /build/icu/source && \
+    ./configure --prefix=$CMAKE_PREFIX_PATH && \
+    make install && \
+    cd ../..
