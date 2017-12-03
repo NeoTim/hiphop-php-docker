@@ -60,13 +60,7 @@ public:
   static const int MaxPrecomputedInteger = 4095 + SCHAR_MIN;
   static StringData const **converted_integers_raw;
   static StringData const **converted_integers;
-
-  // see for details:
-  // https://github.com/facebook/hhvm/issues/570#issuecomment-8831861
-  static IntegerStringDataMap& GetIntegerStringDataMap() {
-    static IntegerStringDataMap integer_string_data_map;
-    return integer_string_data_map;
-  }
+  static IntegerStringDataMap integer_string_data_map;
 
   static bool HasConverted(int64 n) {
     return MinPrecomputedInteger <= n && n <= MaxPrecomputedInteger;
@@ -90,7 +84,6 @@ public:
       }
       return sd;
     }
-    IntegerStringDataMap& integer_string_data_map = GetIntegerStringDataMap();
     IntegerStringDataMap::const_iterator it =
       integer_string_data_map.find(n);
     if (it != integer_string_data_map.end()) return it->second;

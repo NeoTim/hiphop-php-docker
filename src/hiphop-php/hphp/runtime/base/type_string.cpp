@@ -41,6 +41,8 @@ const StaticString empty_string("");
 StringData const **String::converted_integers_raw;
 StringData const **String::converted_integers;
 
+String::IntegerStringDataMap String::integer_string_data_map;
+
 static const StringData *convert_integer_helper(int64 n) {
   char tmpbuf[21];
   char *p;
@@ -53,7 +55,6 @@ static const StringData *convert_integer_helper(int64 n) {
 }
 
 void String::PreConvertInteger(int64 n) {
-  IntegerStringDataMap& integer_string_data_map = GetIntegerStringDataMap();
   IntegerStringDataMap::const_iterator it =
     integer_string_data_map.find(n);
   if (it != integer_string_data_map.end()) return;
