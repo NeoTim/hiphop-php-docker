@@ -1,7 +1,6 @@
 FROM centos:6.7
 
-RUN mkdir -p $HOME/local
-ENV CMAKE_PREFIX_PATH=$HOME/local
+ENV CMAKE_PREFIX_PATH=/usr/local
 ENV USE_HPHPC=1 HPHP_HOME=/build/hiphop-php HPHP_LIB=/build/hiphop-php/bin
 
 RUN yum -y update && yum -y install wget
@@ -23,7 +22,7 @@ RUN cp /usr/lib64/libc-client.so.2007f /usr/local/lib/libc-client.so
 RUN mkdir -p /build
 COPY ./src/ /build/
 
-RUN cp -r /build/imap $HOME/local/include/
+RUN cp -r /build/imap /usr/local/include/
 RUN git clone https://github.com/google/glog.git /build/glog && cd /build/glog && \
     git checkout 6aa35189 && \
     ./configure --prefix=$CMAKE_PREFIX_PATH && \
@@ -75,45 +74,45 @@ RUN cd /build && git config --global http.sslverify false && \
 
 
 RUN export PATH=$PATH:/usr/lib64/mpich/bin/ && cd /build/boost_1_50_0 && \
-    ./bootstrap.sh --prefix=$HOME/local --libdir=$HOME/local/lib && \
+    ./bootstrap.sh --prefix=/usr/local --libdir=/usr/local/lib && \
     ./bjam --layout=system install && \
     cd ..
 
 
 
 RUN cd /build/gmp-4.3.2/ && \
-    ./configure --prefix=$HOME/local/gmp && \
+    ./configure --prefix=/usr/local/gmp && \
     make &&make install
 
 RUN cd /build/mpfr-2.4.2/ && \
-    ./configure --prefix=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
+    ./configure --prefix=/usr/local/mpfr -with-gmp=/usr/local/gmp && \
     make && make install 
 
 RUN cd /build/mpc-0.8.1 && \
-    ./configure --prefix=$HOME/local/mpc -with-mpfr=$HOME/local/mpfr -with-gmp=$HOME/local/gmp && \
+    ./configure --prefix=/usr/local/mpc -with-mpfr=/usr/local/mpfr -with-gmp=/usr/local/gmp && \
     make && make install
 
 
 RUN cd /build/gcc-4.6.3 && \
-    ./configure --prefix=$HOME/local/gcc -enable-threads=posix -disable-checking -disable-multilib -enable-languages=c,c++ -with-gmp=$HOME/local/gmp -with-mpfr=$HOME/local/mpfr/ -with-mpc=$HOME/local/mpc/ && \
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/local/mpc/lib:$HOME/local/gmp/lib:$HOME/local/mpfr/lib/ && \
+    ./configure --prefix=/usr/local/gcc -enable-threads=posix -disable-checking -disable-multilib -enable-languages=c,c++ -with-gmp=/usr/local/gmp -with-mpfr=/usr/local/mpfr/ -with-mpc=/usr/local/mpc/ && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/mpc/lib:/usr/local/gmp/lib:/usr/local/mpfr/lib/ && \
     make && make install
 
 ADD gcc.4.6.3.conf /etc/ld.so.conf.d/gcc.4.6.3.conf
 RUN ldconfig && \
     #mv /usr/bin/gcc  /usr/bin/gcc_old && \
     #mv /usr/bin/g++  /usr/bin/g++_old && \
-    ln -s -f $HOME/local/gcc/bin/gcc  /usr/bin/gcc && \
-    ln -s -f $HOME/local/gcc/bin/g++  /usr/bin/g++ && \
-    cp $HOME/local/gcc/lib64/libstdc++.so.6.0.16 /usr/lib64/. && \
+    ln -s -f /usr/local/gcc/bin/gcc  /usr/bin/gcc && \
+    ln -s -f /usr/local/gcc/bin/g++  /usr/bin/g++ && \
+    cp /usr/local/gcc/lib64/libstdc++.so.6.0.16 /usr/lib64/. && \
     #mv /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6.bak && \
     ln -s -f /usr/lib64/libstdc++.so.6.0.16 /usr/lib64/libstdc++.so.6
 
 ENV CC=gcc CXX=g++
 
 RUN cd /build/hiphop-php && \
-    export CMAKE_INCLUDE_PATH=$HOME/local/include && \
-    export CMAKE_LIBRARY_PATH=$HOME/local/lib && \
+    export CMAKE_INCLUDE_PATH=/usr/local/include && \
+    export CMAKE_LIBRARY_PATH=/usr/local/lib && \
     cmake . && \
     /build/hiphop-php/hphp/tools/generate_compiler_id.sh && \
     /build/hiphop-php/hphp/tools/generate_repo_schema.sh && \
